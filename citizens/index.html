@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>تسجيل المواطنين | فضاء أعوان الإدارة</title>
+  <link rel="stylesheet" href="/citizens/styles.css">
+</head>
+<body>
+  <header class="top"><div class="wrap"><strong>تسجيل المواطنين</strong><span>فضاء خاص بأعوان الإدارة</span></div></header>
+  <main class="wrap">
+    <section class="how card">
+      <h1>كيف تعمل هذه الصفحة؟</h1>
+      <ol>
+        <li>أدخل <b>رمز الدخول</b> الخاص بأعوان الإدارة واسمك.</li>
+        <li>املأ بيانات المواطن كما يصرّح بها أمامك: الاسم، العمر، الهاتف، الحي، وطلبه أو انشغاله.</li>
+        <li>قبل الإرسال، حدّد <b>درجة الأهمية</b> بمؤشر الانزلاق (4 درجات): من «غير مهم» إلى «مهم جدًا».</li>
+        <li>اضغط <b>تسجيل</b>. تُحفظ البيانات في ملف Google Sheet.</li>
+      </ol>
+      <p class="legend-title">في ملف الإكسل تُلوَّن الصفوف وتُرتَّب تلقائيًا من الأهم إلى الأقل أهمية، وضمن الدرجة الواحدة بحسب أسبقية التسجيل:</p>
+      <div class="legend"><span class="l4">مهم جدًا</span><span class="l3">مهم</span><span class="l2">أقل أهمية</span><span class="l1">غير مهم</span></div>
+    </section>
+
+    <section class="card">
+      <form id="citizen-form" novalidate>
+        <div class="grid">
+          <label>رمز الدخول *<input name="accessCode" type="password" autocomplete="off" required></label>
+          <label>اسم عون الإدارة *<input name="agent" maxlength="100" required></label>
+          <label>اسم المواطن ولقبه *<input name="fullName" maxlength="150" required></label>
+          <label>العمر *<input name="age" type="number" min="1" max="120" inputmode="numeric" required></label>
+          <label>رقم الهاتف *<input name="phone" type="tel" inputmode="tel" pattern="(05|06|07)[0-9]{8}" placeholder="05 / 06 / 07 ..." required><small>رقم جزائري من 10 أرقام</small></label>
+          <label>الحي / القرية *<input name="area" maxlength="100" required></label>
+          <label class="full">العنوان<input name="address" maxlength="250"></label>
+          <label class="full">الطلب أو الانشغال<textarea name="request" rows="3" maxlength="1000"></textarea></label>
+        </div>
+
+        <fieldset class="meter" id="meter">
+          <legend>درجة الأهمية</legend>
+          <input type="range" name="level" id="level" min="1" max="4" step="1" value="2" aria-describedby="level-label">
+          <div class="ticks" aria-hidden="true"><span>غير مهم</span><span>أقل أهمية</span><span>مهم</span><span>مهم جدًا</span></div>
+          <p id="level-label" class="current">الدرجة المختارة: <b>أقل أهمية</b></p>
+        </fieldset>
+
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+        <button class="submit" type="submit">تسجيل</button>
+      </form>
+    </section>
+  </main>
+  <script src="/citizens/config.js"></script>
+  <script src="/citizens/app.js"></script>
+</body>
+</html>
