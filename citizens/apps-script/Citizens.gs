@@ -1,11 +1,10 @@
 /**
- * تسجيل المواطنين — Google Apps Script
- * يضيف مواطنًا إلى الورقة، ثم يرتّب كل الصفوف (الأهم أولًا، ثم الأقدم تسجيلًا)
- * ويلوّنها بحسب درجة الأهمية.
+ * تسجيل المواطنين — ملف إضافي في نفس مشروع Apps Script الخاص بالصفحة الرئيسية.
+ * لا يحتوي أسرارًا. يستعمل الثابت SPREADSHEET_ID المعرّف في Code.gs،
+ * ويقرأ رمز أعوان الإدارة من: Project Settings → Script properties → ACCESS_CODE
  *
- * الإعداد: Project Settings → Script properties
- *   SHEET_ID     معرّف ملف Google Sheet
- *   ACCESS_CODE  رمز سري يعرفه أعوان الإدارة فقط
+ * ربطه بـ doPost الحالية في Code.gs: أضف هذا السطر بعد قراءة data مباشرة:
+ *   if (data.accessCode !== undefined) return handleCitizen_(data);
  */
 var SHEET_NAME = 'المواطنون';
 var HEADERS = ['رقم التسجيل', 'تاريخ التسجيل', 'الاسم واللقب', 'العمر', 'رقم الهاتف',
@@ -18,14 +17,11 @@ var LEVELS = {
   1: { label: 'غير مهم',    color: '#d6ead3' }
 };
 
-function doGet() { return json_({ status: 'ok', message: 'service running' }); }
-
-function doPost(e) {
+function handleCitizen_(d) {
   var lock = LockService.getScriptLock();
   try {
     lock.waitLock(20000);
     var props = PropertiesService.getScriptProperties();
-    var d = JSON.parse((e && e.postData && e.postData.contents) || '{}');
 
     if (!props.getProperty('ACCESS_CODE') || String(d.accessCode || '') !== props.getProperty('ACCESS_CODE')) {
       return json_({ status: 'error', message: 'رمز الدخول غير صحيح.' });
@@ -36,7 +32,7 @@ function doPost(e) {
       return json_({ status: 'error', message: 'بيانات غير صحيحة، راجع الحقول.' });
     }
 
-    var sheet = getSheet_(props.getProperty('SHEET_ID'));
+    var sheet = getSheet_(SPREADSHEET_ID);
     var last = sheet.getLastRow();
     var nextId = last > 1 ? Math.max.apply(null, sheet.getRange(2, COL_ID, last - 1, 1).getValues().map(function (r) { return Number(r[0]) || 0; })) + 1 : 1;
 
